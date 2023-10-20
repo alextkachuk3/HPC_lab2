@@ -115,7 +115,7 @@ void Matrix::dummy_data_initialization()
 	{
 		for (size_t j = 0; j < width; j++)
 		{
-			values[i * width + j] = (double)i;
+			values[i * width + j] = 1.0;
 		}
 	}
 }
@@ -146,7 +146,7 @@ Matrix operator*(const Matrix& left, const Matrix& right)
 		{
 			for (int k = 0; k < right.height; k++)
 			{
-				result.values[i * left.width + j] += left.values[i * left.width + k] * right.values[k * right.width + j];
+				result.values[i * right.width + j] += left.values[i * left.width + k] * right.values[k * right.width + j];
 			}
 		}
 	}

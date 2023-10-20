@@ -9,10 +9,13 @@ bool evaluation_test = false;
 
 void test_matrix_vector_multiplication(const size_t& size)
 {
-	Matrix matrix_left(size);
-	Matrix matrix_right(size);
+	Matrix matrix_left(2, 3);
+	Matrix matrix_right(4, 2);
 	matrix_left.random_data_initialization();
 	matrix_right.random_data_initialization();
+
+	matrix_left.dummy_data_initialization();
+	matrix_right.dummy_data_initialization();
 
 	auto start = std::chrono::high_resolution_clock::now();
 
