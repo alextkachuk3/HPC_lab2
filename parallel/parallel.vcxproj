@@ -127,7 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\serial\Matrix.cpp" />
+    <ClCompile Include="HPC.cpp" />
     <ClCompile Include="parallel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\serial\Matrix.h" />
+    <ClInclude Include="HPC.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

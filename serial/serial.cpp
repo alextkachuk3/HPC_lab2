@@ -4,13 +4,13 @@
 
 #include "Matrix.h"
 
-bool print_values = true;
+bool print_values = false;
 bool evaluation_test = false;
 
 void test_matrix_vector_multiplication(const size_t& size)
 {
-	Matrix matrix_left(2, 3);
-	Matrix matrix_right(4, 2);
+	Matrix matrix_left(size);
+	Matrix matrix_right(size);
 	matrix_left.random_data_initialization();
 	matrix_right.random_data_initialization();
 
@@ -42,6 +42,23 @@ void test_matrix_vector_multiplication(const size_t& size)
 
 int main(int argc, char* argv[])
 {
+	//test 
+	/*double test1[12] = { 3.0, 4.2, 3.1, 1.3, 5.6, 7.8, 0.4, 1.3, 1.9, 4.7, 0.9, 6.6 };
+	double test2[6] = { 3.3, 1.7, 7.7, 9.1, 8.2, 2.2 };
+
+	Matrix matrix_left(test1, 3, 4, false);
+	Matrix matrix_right(test2, 2, 3, false);
+	Matrix result = matrix_left * matrix_right;
+
+	size_t outputWide = 10;
+	matrix_left.set_output_wide(outputWide);
+	matrix_right.set_output_wide(outputWide);
+	result.set_output_wide(outputWide);
+
+	std::cout << "Left matrix" << std::endl << matrix_left;
+	std::cout << "Right matrix" << std::endl << matrix_right;
+	std::cout << "Result vector:" << std::endl << result;*/
+
 	for (size_t i = 0; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-p") == 0)
@@ -75,7 +92,7 @@ int main(int argc, char* argv[])
 
 	size_t size;
 
-	std::cout << "Enter size of matrix and vector:";
+	std::cout << "Enter size of matrix:";
 
 	std::cin >> size;
 
