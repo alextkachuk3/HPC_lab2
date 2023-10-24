@@ -1,10 +1,10 @@
 #include <iostream>
 #include "HPC.h"
 
-size_t evaluation_sizes[] = { 10, 100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 };
-
 bool print_values = false;
 bool evaluation_test = false;
+
+size_t evaluation_sizes[] = { 10, 100, 500, 1000, 1500, 2000, 2500, 3000 };
 
 void test_matrix_multiplication(const size_t& size, HPC& hpc)
 {
@@ -28,10 +28,11 @@ void test_matrix_multiplication(const size_t& size, HPC& hpc)
 		size_t outputWide = 10;
 		A.set_output_wide(outputWide);
 		B.set_output_wide(outputWide);
+		C.set_output_wide(outputWide);
 
-		std::cout << "Left matrix" << std::endl << A;
-		std::cout << "Right matrix" << std::endl << B;
-		std::cout << "Result vector:" << std::endl << C;
+		std::cout << "A matrix" << std::endl << A;
+		std::cout << "B matrix" << std::endl << B;
+		std::cout << "C matrix:" << std::endl << C;
 	}
 
 	std::cout << "Time of execution = " << std::fixed << std::setprecision(12) << duration << std::endl;

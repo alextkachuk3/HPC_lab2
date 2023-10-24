@@ -42,23 +42,6 @@ void test_matrix_vector_multiplication(const size_t& size)
 
 int main(int argc, char* argv[])
 {
-	//test 
-	/*double test1[12] = { 3.0, 4.2, 3.1, 1.3, 5.6, 7.8, 0.4, 1.3, 1.9, 4.7, 0.9, 6.6 };
-	double test2[6] = { 3.3, 1.7, 7.7, 9.1, 8.2, 2.2 };
-
-	Matrix matrix_left(test1, 3, 4, false);
-	Matrix matrix_right(test2, 2, 3, false);
-	Matrix result = matrix_left * matrix_right;
-
-	size_t outputWide = 10;
-	matrix_left.set_output_wide(outputWide);
-	matrix_right.set_output_wide(outputWide);
-	result.set_output_wide(outputWide);
-
-	std::cout << "Left matrix" << std::endl << matrix_left;
-	std::cout << "Right matrix" << std::endl << matrix_right;
-	std::cout << "Result vector:" << std::endl << result;*/
-
 	for (size_t i = 0; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-p") == 0)
@@ -73,7 +56,7 @@ int main(int argc, char* argv[])
 
 	if (evaluation_test)
 	{
-		size_t evaluation_sizes[] = { 10, 100, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000 };
+		size_t evaluation_sizes[] = { 10, 100, 500, 1000, 1500, 2000, 2500, 3000 };
 
 		for (size_t i = 0; i < sizeof(evaluation_sizes) / sizeof(size_t); i++)
 		{

@@ -36,7 +36,6 @@ Matrix HPC::matrix_multiplication(Matrix* const& A, Matrix* const& B)
 	data_distribution();
 	parallel_result_calculation();
 	result_collection();
-
 	return C;
 }
 
@@ -78,6 +77,7 @@ void HPC::process_initialization()
 	block_size = size / grid_size;
 	A_block = Matrix(block_size, block_size);
 	B_block = Matrix(block_size, block_size);
+	C_block = Matrix(block_size, block_size);
 	matrix_A_block = Matrix(block_size, block_size);
 }
 
@@ -98,7 +98,7 @@ void HPC::checkerboard_matrix_scatter(double*& matrix, double*& matrix_block)
 		else
 		{
 			MPI_Scatter(matrix, block_size * size, MPI_DOUBLE, matrix_row, block_size * size, MPI_DOUBLE, 0, col_comm);
-		}		
+		}
 	}
 	for (int i = 0; i < block_size; i++) {
 		MPI_Scatter(&matrix_row[i * size], block_size, MPI_DOUBLE, &(matrix_block[i * block_size]), block_size, MPI_DOUBLE, 0, row_comm);
@@ -110,7 +110,7 @@ void HPC::parallel_result_calculation()
 {
 	for (int iter = 0; iter < grid_size; iter++) {
 		A_block_communication(iter);
-		C_block = A_block * B_block;
+		C_block += A_block * B_block;
 		B_block_communication();
 	}
 }
@@ -139,12 +139,15 @@ void HPC::result_collection()
 {
 	double* pResultRow = new double[size * block_size];
 	for (int i = 0; i < block_size; i++) {
-		MPI_Gather(&C_block.get_values()[i * block_size], block_size, MPI_DOUBLE,
-			&pResultRow[i * size], block_size, MPI_DOUBLE, 0, row_comm);
+		MPI_Gather(&C_block.get_values()[i * block_size], block_size, MPI_DOUBLE, &pResultRow[i * size], block_size, MPI_DOUBLE, 0, row_comm);
 	}
 	if (grid_coords[1] == 0) {
-		MPI_Gather(pResultRow, block_size * size, MPI_DOUBLE, C.get_values(),
-			block_size * size, MPI_DOUBLE, 0, col_comm);
+		MPI_Gather(pResultRow, block_size * size, MPI_DOUBLE, C.get_values(), block_size * size, MPI_DOUBLE, 0, col_comm);
 	}
 	delete[] pResultRow;
+}
+
+void HPC::log(const std::string& message)
+{
+	std::cout << "\n Process " + std::to_string(process_rank) + ": \n" + message + "\n";
 }

@@ -23,6 +23,8 @@ private:
 	void B_block_communication();
 	void result_collection();
 
+	void log(const std::string& message);
+
 	int process_num;
 	int process_rank;
 	int grid_size;

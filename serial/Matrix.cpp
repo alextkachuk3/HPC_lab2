@@ -41,7 +41,7 @@ std::string Matrix::to_string() const
 	{
 		for (size_t j = 0; j < width; j++)
 		{
-			string << std::setw(outputWide) << std::fixed << std::setprecision(4) << values[i * width + j];
+			string << std::setw(outputWide) << std::fixed << std::setprecision(3) << values[i * width + j];
 		}
 		string << std::setw(0) << std::endl;
 	}
@@ -80,6 +80,8 @@ void Matrix::set_output_wide(const size_t& outputWide)
 
 bool Matrix::operator==(const Matrix& other)
 {
+	static double Accuracy = 1.e-6;
+
 	if (this->width != other.width && this->height != other.height)
 	{
 		return false;
@@ -89,7 +91,7 @@ bool Matrix::operator==(const Matrix& other)
 	{
 		for (size_t j = 0; j < width; j++)
 		{
-			if (values[i * width + j] != other.values[i * width + j])
+			if (fabs(other.values[i * width + j] - values[i * width + j] >= Accuracy))
 			{
 				return false;
 			}
@@ -97,6 +99,18 @@ bool Matrix::operator==(const Matrix& other)
 	}
 
 	return true;
+}
+
+Matrix& Matrix::operator+=(const Matrix& other)
+{
+	for (size_t i = 0; i < height; i++)
+	{
+		for (size_t j = 0; j < width; j++)
+		{
+			values[i * width + j] += other.values[i * width + j];
+		}
+	}
+	return *this;
 }
 
 void Matrix::dummy_data_initialization()

@@ -25,10 +25,12 @@ public:
 
 	bool operator==(const Matrix& other);
 	friend Matrix operator*(const Matrix& left, const Matrix& right);
+	Matrix& operator+=(const Matrix& other);
 
 	friend std::ostream& operator<< (std::ostream& out, const Matrix& matrix);
 
 private:
+
 	size_t height;
 	size_t width;
 	size_t submatrix_index;
