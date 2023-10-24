@@ -8,15 +8,17 @@ bool evaluation_test = false;
 
 void test_matrix_multiplication(const size_t& size, HPC& hpc)
 {
-	Matrix matrix_left(size);
-	Matrix matrix_right(size);
+	Matrix A(size);
+	Matrix B(size);
 
-	matrix_left.random_data_initialization();
-	matrix_right.random_data_initialization();
+	A.random_data_initialization();
+	B.random_data_initialization();
 
 	double start, finish, duration;
 
 	start = MPI_Wtime();
+
+	Matrix C = hpc.matrix_multiplication(&A, &B);
 
 	finish = MPI_Wtime();
 	duration = finish - start;
@@ -24,24 +26,24 @@ void test_matrix_multiplication(const size_t& size, HPC& hpc)
 	if (print_values)
 	{
 		size_t outputWide = 10;
-		matrix_left.set_output_wide(outputWide);
-		matrix_right.set_output_wide(outputWide);
+		A.set_output_wide(outputWide);
+		B.set_output_wide(outputWide);
 
-		std::cout << "Left matrix" << std::endl << matrix_left;
-		std::cout << "Right matrix" << std::endl << matrix_right;
-		//std::cout << "Result vector:" << std::endl << result;
+		std::cout << "Left matrix" << std::endl << A;
+		std::cout << "Right matrix" << std::endl << B;
+		std::cout << "Result vector:" << std::endl << C;
 	}
 
 	std::cout << "Time of execution = " << std::fixed << std::setprecision(12) << duration << std::endl;
 
-	/*if (result == matrix * vector)
+	if (C == A * B)
 	{
 		std::cout << "The results of serial and parallel algorithms are identical!" << std::endl;
 	}
 	else
 	{
 		std::cout << "The results of serial and parallel algorithms are NOT identical!" << std::endl;
-	}*/
+	}
 }
 
 int main(int argc, char* argv[])
@@ -80,7 +82,7 @@ int main(int argc, char* argv[])
 		}
 
 		size_t size;
-		std::cout << "Enter size of matrix and vector:";
+		std::cout << "Enter size of matrix:";
 		std::cin >> size;
 		test_matrix_multiplication(size, hpc);
 
@@ -91,12 +93,12 @@ int main(int argc, char* argv[])
 		{
 			for (size_t i = 0; i < sizeof(evaluation_sizes) / sizeof(size_t); i++)
 			{
-				// hpc.matrix_vector_multiplication();
+				hpc.matrix_multiplication();
 			}
 		}
 		else
 		{
-			// hpc.matrix_vector_multiplication();
+			hpc.matrix_multiplication();
 		}
 	}
 	return 0;

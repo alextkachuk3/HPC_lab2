@@ -6,9 +6,9 @@
 class Matrix
 {
 public:
+	Matrix() = default;
 	Matrix(const size_t& size);
 	Matrix(const size_t& width, const size_t& height);
-	Matrix(double* values, const size_t& width, const size_t& height, const bool& delete_on_release = false);
 	~Matrix();
 
 	void dummy_data_initialization();
@@ -18,7 +18,7 @@ public:
 	size_t get_width() const;
 	size_t get_height() const;
 	size_t get_submatrix_index() const;
-	double* get_values() const;
+	double*& get_values();
 
 	void set_submutrix_index(const size_t& submatrix_index);
 	void set_output_wide(const size_t& outputWide);
@@ -34,7 +34,7 @@ private:
 	size_t submatrix_index;
 	double* values;
 
-	bool delete_on_release;
+	int* delete_counter;
 
 	size_t outputWide;
 	const static size_t defaultOutputWide = 7;

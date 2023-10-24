@@ -9,7 +9,7 @@ Matrix::Matrix(const size_t& size)
 	this->height = size;
 
 	values = new double[size * size] {0};
-	this->delete_on_release = true;
+	this->delete_counter = new int{ 1 };
 }
 
 Matrix::Matrix(const size_t& width, const size_t& height)
@@ -21,26 +21,16 @@ Matrix::Matrix(const size_t& width, const size_t& height)
 	this->height = height;
 
 	values = new double[width * height] {0};
-	delete_on_release = true;
-}
-
-Matrix::Matrix(double* values, const size_t& width, const size_t& height, const bool& delete_on_release)
-{
-	outputWide = defaultOutputWide;
-	submatrix_index = 0;
-
-	this->width = width;
-	this->height = height;
-
-	this->values = values;
-	this->delete_on_release = delete_on_release;
+	this->delete_counter = new int{ 1 };
 }
 
 Matrix::~Matrix()
 {
-	if (delete_on_release)
+	delete_counter--;
+	if (delete_counter == 0)
 	{
 		delete[] values;
+		delete delete_counter;
 	}
 }
 
@@ -73,7 +63,7 @@ size_t Matrix::get_submatrix_index() const
 	return submatrix_index;
 }
 
-double* Matrix::get_values() const
+double*& Matrix::get_values()
 {
 	return values;
 }
