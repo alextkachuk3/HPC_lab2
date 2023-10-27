@@ -12,6 +12,7 @@ public:
 	Matrix matrix_multiplication(Matrix* const& A = nullptr, Matrix* const& B = nullptr);
 
 	int get_process_rank();
+	int get_process_num();
 
 private:
 	void create_grid_communicators();

@@ -125,8 +125,7 @@ void Matrix::dummy_data_initialization()
 }
 
 void Matrix::random_data_initialization()
-{
-	srand(clock());
+{	
 	for (size_t i = 0; i < height; i++)
 	{
 		for (size_t j = 0; j < width; j++)

@@ -44,6 +44,11 @@ int HPC::get_process_rank()
 	return process_rank;
 }
 
+int HPC::get_process_num()
+{
+	return process_num;
+}
+
 void HPC::create_grid_communicators()
 {
 	int dim_size[2];
@@ -70,7 +75,7 @@ void HPC::create_grid_communicators()
 void HPC::process_initialization()
 {
 	if (size % grid_size != 0) {
-		throw std::invalid_argument("Size of matrices must be divisible by the grid size!\n");
+		throw std::invalid_argument("Size of matrices must be divisible by the grid size!");
 	}
 
 	MPI_Bcast(&size, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -127,24 +132,30 @@ void HPC::A_block_communication(const int& iter)
 
 void HPC::B_block_communication()
 {
-	MPI_Status Status;
-	int NextProc = grid_coords[0] + 1;
-	if (grid_coords[0] == grid_size - 1) NextProc = 0;
-	int PrevProc = grid_coords[0] - 1;
-	if (grid_coords[0] == 0) PrevProc = grid_size - 1;
-	MPI_Sendrecv_replace(B_block.get_values(), block_size * block_size, MPI_DOUBLE, NextProc, 0, PrevProc, 0, col_comm, &Status);
+	MPI_Status status;
+	int next_process = grid_coords[0] + 1;
+	if (grid_coords[0] == grid_size - 1)
+	{
+		next_process = 0;
+	}
+	int prev_process = grid_coords[0] - 1;
+	if (grid_coords[0] == 0)
+	{
+		prev_process = grid_size - 1;
+	}
+	MPI_Sendrecv_replace(B_block.get_values(), block_size * block_size, MPI_DOUBLE, next_process, 0, prev_process, 0, col_comm, &status);
 }
 
 void HPC::result_collection()
 {
-	double* pResultRow = new double[size * block_size];
+	double* result_row = new double[size * block_size];
 	for (int i = 0; i < block_size; i++) {
-		MPI_Gather(&C_block.get_values()[i * block_size], block_size, MPI_DOUBLE, &pResultRow[i * size], block_size, MPI_DOUBLE, 0, row_comm);
+		MPI_Gather(&C_block.get_values()[i * block_size], block_size, MPI_DOUBLE, &result_row[i * size], block_size, MPI_DOUBLE, 0, row_comm);
 	}
 	if (grid_coords[1] == 0) {
-		MPI_Gather(pResultRow, block_size * size, MPI_DOUBLE, C.get_values(), block_size * size, MPI_DOUBLE, 0, col_comm);
+		MPI_Gather(result_row, block_size * size, MPI_DOUBLE, C.get_values(), block_size * size, MPI_DOUBLE, 0, col_comm);
 	}
-	delete[] pResultRow;
+	delete[] result_row;
 }
 
 void HPC::log(const std::string& message)

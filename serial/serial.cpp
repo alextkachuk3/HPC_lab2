@@ -14,9 +14,6 @@ void test_matrix_vector_multiplication(const size_t& size)
 	matrix_left.random_data_initialization();
 	matrix_right.random_data_initialization();
 
-	matrix_left.dummy_data_initialization();
-	matrix_right.dummy_data_initialization();
-
 	auto start = std::chrono::high_resolution_clock::now();
 
 	Matrix result = matrix_left * matrix_right;
@@ -42,6 +39,8 @@ void test_matrix_vector_multiplication(const size_t& size)
 
 int main(int argc, char* argv[])
 {
+	srand(clock());
+
 	for (size_t i = 0; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-p") == 0)

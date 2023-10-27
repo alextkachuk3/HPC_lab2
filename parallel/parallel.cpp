@@ -4,15 +4,13 @@
 bool print_values = false;
 bool evaluation_test = false;
 
-size_t evaluation_sizes[] = { 10, 100, 500, 1000, 1500, 2000, 2500, 3000 };
-
 void test_matrix_multiplication(const size_t& size, HPC& hpc)
 {
 	Matrix A(size);
 	Matrix B(size);
 
-	A.random_data_initialization();
-	B.random_data_initialization();
+	A.dummy_data_initialization();
+	B.dummy_data_initialization();
 
 	double start, finish, duration;
 
@@ -49,6 +47,8 @@ void test_matrix_multiplication(const size_t& size, HPC& hpc)
 
 int main(int argc, char* argv[])
 {
+	srand(clock());
+
 	for (size_t i = 0; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-p") == 0)
@@ -63,22 +63,38 @@ int main(int argc, char* argv[])
 
 	HPC hpc(argc, argv);
 
+	size_t* evaluation_sizes;
+
+	if (hpc.get_process_num() == 9)
+	{
+		evaluation_sizes = new size_t[9]{ 12, 102, 504, 1002, 1500, 2001, 2502, 3000 };
+	}
+	else
+	{
+		evaluation_sizes = new size_t[9]{ 10, 100, 500, 1000, 1500, 2000, 2500, 3000 };
+	}
+
 	if (hpc.get_process_rank() == 0)
 	{
 		if (evaluation_test)
 		{
-			for (size_t i = 0; i < sizeof(evaluation_sizes) / sizeof(size_t); i++)
+			for (size_t i = 0; i < 8; i++)
 			{
-				Matrix matrix_left(evaluation_sizes[i]);
-				Matrix matrix_right(evaluation_sizes[i]);
-				matrix_left.random_data_initialization();
-				matrix_right.random_data_initialization();
+				if (hpc.get_process_num() < evaluation_sizes[i])
+				{
+					Matrix matrix_left(evaluation_sizes[i]);
+					Matrix matrix_right(evaluation_sizes[i]);
+					matrix_left.random_data_initialization();
+					matrix_right.random_data_initialization();
 
-				std::cout << std::endl << "Matrix size " << evaluation_sizes[i] << "x"
-					<< evaluation_sizes[i] << ":" << std::endl;
+					std::cout << std::endl << "Matrix size " << evaluation_sizes[i] << "x"
+						<< evaluation_sizes[i] << ":" << std::endl;
 
-				test_matrix_multiplication(evaluation_sizes[i], hpc);
+					test_matrix_multiplication(evaluation_sizes[i], hpc);
+				}
 			}
+
+			delete[] evaluation_sizes;
 			return 0;
 		}
 
@@ -86,13 +102,12 @@ int main(int argc, char* argv[])
 		std::cout << "Enter size of matrix:";
 		std::cin >> size;
 		test_matrix_multiplication(size, hpc);
-
 	}
 	else
 	{
 		if (evaluation_test)
 		{
-			for (size_t i = 0; i < sizeof(evaluation_sizes) / sizeof(size_t); i++)
+			for (size_t i = 0; i < 8; i++)
 			{
 				hpc.matrix_multiplication();
 			}
@@ -102,5 +117,7 @@ int main(int argc, char* argv[])
 			hpc.matrix_multiplication();
 		}
 	}
+
+	delete[] evaluation_sizes;
 	return 0;
 }
